@@ -42,7 +42,7 @@ cd www && pnpm build
 
 ### Backend
 
-For the static site to work you need to run build it first.
+PS: For the static site to work you need to build it first.
 
 Then run the Backend with:
 
@@ -55,7 +55,7 @@ cargo run
 
 ### /api/openmeteo
 
-Takes the query parameters:
+Accepts a JSON request with the following fields:
 
 * `city` - The city to get the weather for
 * `start_date` - The start date of the weather data
