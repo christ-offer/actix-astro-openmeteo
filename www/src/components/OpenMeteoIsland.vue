@@ -1,8 +1,27 @@
 <script setup lang="ts">
-import { defineProps, ref } from "vue";
+import { defineProps, ref, watch } from "vue";
 import type {ReturnOpenMeteo} from "../types/openmeteo";
+import SelectInput from "./SelectInput.vue";
+import WeatherCard from "./WeatherCard.vue";
 
+interface FilterOptions {
+  label: string;
+  value: string;
+}
 
+const filterOptions: FilterOptions[] = [
+  { label: 'Temperature 2m Max', value: 'temperature_2m_max' },
+  { label: 'Temperature 2m Min', value: 'temperature_2m_min' },
+  { label: 'Temperature 2m Mean', value: 'temperature_2m_mean' },
+  { label: 'Apparent Temperature Max', value: 'apparent_temperature_max' },
+  { label: 'Apparent Temperature Min', value: 'apparent_temperature_min' },
+  { label: 'Apparent Temperature Mean', value: 'apparent_temperature_mean' },
+  { label: 'Precipitation Sum', value: 'precipitation_sum' },
+  { label: 'Snowfall Sum', value: 'snowfall_sum' },
+  { label: 'Shortwave Radiation Sum', value: 'shortwave_radiation_sum' },
+  { label: 'Wind Speed 10m Max', value: 'windspeed_10m_max' },
+  { label: 'Wind Gusts 10m Max', value: 'windgusts_10m_max' },
+];
 </script>
 <template>
   <h1>
@@ -14,10 +33,15 @@ import type {ReturnOpenMeteo} from "../types/openmeteo";
   <p>
     This is a page to show the data from the OpenMeteo API - The data is fetched from the API running on an Actix webserver (Rust btw) on localhost:3000/api/openmeteo where the statistics are calculated and delivered to the client.
   </p>
+  <SelectInput v-model="filterOption" :options="filterOptions" />
+  <SelectInput v-model="sortDirection" :options="sortOptions" />
   <input type="text" v-model="city" placeholder="City" />
   <input type="date" v-model="start_date" />
   <input type="date" v-model="end_date" />
   <button @click="fetchOpenMeteo(city, start_date, end_date)">Get Weather Statistics</button>
+ 
+  
+    
   <div v-if="data.latitude">
     <h1>Weather Statistics:</h1>
     <p>City: {{ city }}</p>
@@ -28,105 +52,34 @@ import type {ReturnOpenMeteo} from "../types/openmeteo";
     <p>Timezone: {{ data.timezone }}</p>
     <p>Timezone Abbr: {{ data.timezone_abbreviation }}</p>
     <p>Statitics:</p>
-    <ul>
-      <li>
-        Temperature 2m Max:
-        <p>
-          The highest recorded value is {{ data.stats.temperature_2m_max.max.value }} {{ data.daily_units.temperature_2m_max }} - it was recorded on {{ data.stats.temperature_2m_max.max.time }}
-        </p>
-      </li>
-      <li>
-        <p>
-          The lowest recorded value is {{ data.stats.temperature_2m_max.min.value }} {{ data.daily_units.temperature_2m_min }} - it was recorded on {{ data.stats.temperature_2m_max.min.time }}
-        </p>
-      </li>
-      <li>
-        <p>
-          The average value is {{ data.stats.temperature_2m_max.mean.value }} {{ data.daily_units.temperature_2m_mean }}
-        </p>
-      </li>
-      <li>
-        Temperature 2m Min:
-        <p>
-          The highest recorded value is {{ data.stats.temperature_2m_min.max.value }} {{ data.daily_units.temperature_2m_max }} - it was recorded on {{ data.stats.temperature_2m_min.max.time }}
-        </p>
-      </li>
-      <li>
-        <p>
-          The lowest recorded value is {{ data.stats.temperature_2m_min.min.value }} {{ data.daily_units.temperature_2m_min }} - it was recorded on {{ data.stats.temperature_2m_min.min.time }}
-        </p>
-      </li>
-      <li>
-        <p>
-          The average value is {{ data.stats.temperature_2m_min.mean.value }} {{ data.daily_units.temperature_2m_mean }}
-        </p>
-      </li>
-      <li>
-        Temperature 2m Mean:
-        <p>
-          The highest recorded value is {{ data.stats.temperature_2m_mean.max.value }} {{ data.daily_units.temperature_2m_max }} - it was recorded on {{ data.stats.temperature_2m_mean.max.time }}
-        </p>
-      </li>
-      <li>
-        <p>
-          The lowest recorded value is {{ data.stats.temperature_2m_mean.min.value }} {{ data.daily_units.temperature_2m_min }} - it was recorded on {{ data.stats.temperature_2m_mean.min.time }}
-        </p>
-      </li>
-      <li>
-        <p>
-          The average value is {{ data.stats.temperature_2m_mean.mean.value }} {{ data.daily_units.temperature_2m_mean }}
-        </p>
-      </li>
-      <li>
-        apparent_temperature_max:
-        <p>
-          The highest recorded value is {{ data.stats.apparent_temperature_max.max.value }} {{ data.daily_units.apparent_temperature_max }} - it was recorded on {{ data.stats.apparent_temperature_max.max.time }}
-        </p>
-      </li>
-      <li>
-        <p>
-          The lowest recorded value is {{ data.stats.apparent_temperature_max.min.value }} {{ data.daily_units.apparent_temperature_min }} - it was recorded on {{ data.stats.apparent_temperature_max.min.time }}
-        </p>
-      </li>
-      <li>
-        <p>
-          The average value is {{ data.stats.apparent_temperature_max.mean.value }} {{ data.daily_units.apparent_temperature_mean }}
-        </p>
-      </li>
-      <li>
-        apparent_temperature_min:
-        <p>
-          The highest recorded value is {{ data.stats.apparent_temperature_min.max.value }} {{ data.daily_units.apparent_temperature_max }} - it was recorded on {{ data.stats.apparent_temperature_min.max.time }}
-        </p>
-      </li>
-      <li>
-        <p>
-          The lowest recorded value is {{ data.stats.apparent_temperature_min.min.value }} {{ data.daily_units.apparent_temperature_min }} - it was recorded on {{ data.stats.apparent_temperature_min.min.time }}
-        </p>
-      </li>
-      <li>
-        <p>
-          The average value is {{ data.stats.apparent_temperature_min.mean.value }} {{ data.daily_units.apparent_temperature_mean }}
-        </p>
-      </li>
-      <li>
-        apparent_temperature_mean:
-        <p>
-          The highest recorded value is {{ data.stats.apparent_temperature_mean.max.value }} {{ data.daily_units.apparent_temperature_max }} - it was recorded on {{ data.stats.apparent_temperature_mean.max.time }}
-        </p>
-      </li>
-      <li>
-        <p>
-          The lowest recorded value is {{ data.stats.apparent_temperature_mean.min.value }} {{ data.daily_units.apparent_temperature_min }} - it was recorded on {{ data.stats.apparent_temperature_mean.min.time }}
-        </p>
-      </li>
-      <li>
-        <p>
-          The average value is {{ data.stats.apparent_temperature_mean.mean.value }} {{ data.daily_units.apparent_temperature_mean }}
-        </p>
-      </li>
-    </ul>
+    <div class="stat-list">
+    <WeatherCard v-for="stat in filterOptions">
+      <template #datapoint>
+        {{ stat.label }}
+      </template>
+      <template #max-temp>
+        {{ data.stats[stat.value].max.value }} {{ data.daily_units[stat.value] }}
+      </template>
+      <template #max-date>
+        {{ data.stats[stat.value].max.time }}
+      </template>
+      <template #min-temp>
+        {{ data.stats[stat.value].min.value }} {{ data.daily_units[stat.value] }}
+      </template>
+      <template #min-date>
+        {{ data.stats[stat.value].min.time }}
+      </template>
+      <template #mean-temp>
+        <!-- A dirty inline function to round to two decimals -->
+        {{ (Math.round(data.stats[stat.value].mean.value * 100) / 100).toFixed(2) }} {{ data.daily_units[stat.value] }} 
+      </template>
+      <template #mean-date>
+        {{ data.stats[stat.value].mean.time }}
+      </template>
+    </WeatherCard>
+  </div>
   </div>  
+  
   <div
   v-if="loading"
   >
@@ -141,7 +94,31 @@ let city = ref("");
 let start_date = ref("");
 let end_date = ref("");
 let loading = ref(false);
+let filterOption = ref("");
+let sortDirection = ref("");
 
+
+
+const sortOptions = [
+  { label: 'None', value: 'none' },
+  { label: 'Ascending', value: 'asc' },
+  { label: 'Descending', value: 'desc' },
+];
+
+
+watch(
+  () => filterOption.value,
+  (newValue, oldValue) => {
+    console.log("Filter method changed", newValue, oldValue);
+  }
+);
+
+watch(
+  () => sortDirection.value,
+  (newValue, oldValue) => {
+    console.log("Sorting method changed", newValue, oldValue);
+  }
+);
 
 const fetchOpenMeteo = async (city: string, start_date: string, end_date: string) => {
   if (data) {
@@ -166,3 +143,12 @@ const fetchOpenMeteo = async (city: string, start_date: string, end_date: string
 
 
 </script>
+<style scoped>
+.stat-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 1rem;
+  max-width: 100%;
+}
+
+</style>
