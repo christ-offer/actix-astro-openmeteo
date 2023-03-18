@@ -24,34 +24,39 @@ const filterOptions: FilterOptions[] = [
 ];
 </script>
 <template>
-  <h1>
-    OpenMeteo Island
-  </h1>
-  <p>
-    This is a Vue island component inside a statically build Astro page.
-  </p>
-  <p>
-    This is a page to show the data from the OpenMeteo API - The data is fetched from the API running on an Actix webserver (Rust btw) on localhost:3000/api/openmeteo where the statistics are calculated and delivered to the client.
-  </p>
+  <h1 class="text-gradient">OpenMeteo</h1>
+  <div class="instructions landing-text">
+    <p>
+      This is a Vue island component inside a statically build Astro page.
+    </p>
+    <p>
+      This is a page to show the data from the OpenMeteo API - 
+    </p>
+    <p>
+      The data is fetched from the API running on an Actix webserver (Rust btw) on localhost:3000/api/openmeteo where the statistics are calculated and delivered to the client.
+    </p>
+</div>
+  <!--
   <SelectInput v-model="filterOption" :options="filterOptions" />
   <SelectInput v-model="sortDirection" :options="sortOptions" />
-  <input type="text" v-model="city" placeholder="City" />
-  <input type="date" v-model="start_date" />
-  <input type="date" v-model="end_date" />
-  <button @click="fetchOpenMeteo(city, start_date, end_date)">Get Weather Statistics</button>
- 
+  -->
+  <div class="input-container">
+    <input type="text" v-model="city" placeholder="City" class="instructions"/>
+    <input type="date" v-model="start_date" class="instructions"/>
+    <input type="date" v-model="end_date" class="instructions"/>
+    <button class="instructions" @click="fetchOpenMeteo(city, start_date, end_date)">Get Weather Statistics</button>
+  </div>
   
     
   <div v-if="data.latitude">
-    <h1>Weather Statistics:</h1>
-    <p>City: {{ city }}</p>
-    <p>Start Date: {{ start_date }}</p>
-    <p>End Date: {{ end_date }}</p>
-    <p>Latitude: {{ data.latitude }}</p>
-    <p>Longitude: {{ data.longitude }}</p>
-    <p>Timezone: {{ data.timezone }}</p>
-    <p>Timezone Abbr: {{ data.timezone_abbreviation }}</p>
-    <p>Statitics:</p>
+    <div class="instructions location-info">
+      <p>Location: {{ city }}</p>
+      <p>Start Date: {{ start_date }}</p>
+      <p>End Date: {{ end_date }}</p>
+      <p>Latitude: {{ data.latitude }}</p>
+      <p>Longitude: {{ data.longitude }}</p>
+    </div>
+    <h1 class="text-gradient">Selected stats:</h1>
     <div class="stat-list">
     <WeatherCard v-for="stat in filterOptions">
       <template #datapoint>
@@ -150,5 +155,41 @@ const fetchOpenMeteo = async (city: string, start_date: string, end_date: string
   gap: 1rem;
   max-width: 100%;
 }
+
+.input-container {
+  display: flex;
+  place-content: center;
+  gap: 1rem;
+}
+
+.input-container input {
+  padding: 0.5rem !important;
+  margin-inline: 0;
+}
+
+.input-container button {
+  padding: 0.5rem !important;
+  margin-inline: 0;
+}
+
+.text-gradient {
+  font-size: 62px !important;
+  text-align: center;
+}
+
+.location-info {
+  max-width: 40%;
+  margin-inline: auto;
+}
+
+.locaction-info p {
+  text-align: center
+}
+
+.landing-text {
+  max-width: 75%;
+  margin-inline: auto;
+}
+
 
 </style>

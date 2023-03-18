@@ -44,10 +44,13 @@
 </template>
 <style scoped>
 article {
-  gap: 1rem;
-  padding: 1rem;
-  background-color: hsl(282, 42%, 53%);
-  text-align: center; 
+  line-height: 1.6;
+	margin: 1rem 0;
+	border: 1px solid rgba(var(--accent), 25%);
+	background-color: white;
+	padding: 1rem;
+	border-radius: 0.4rem;
+  text-align: center;
 }
 article div {
   display: grid;
