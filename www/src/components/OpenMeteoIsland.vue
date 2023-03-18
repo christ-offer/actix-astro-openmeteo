@@ -5,7 +5,7 @@ import SelectInput from "./SelectInput.vue";
 import WeatherCard from "./WeatherCard.vue";
 
 interface FilterOptions {
-  label: string;
+  label: unknown;
   value: string;
 }
 
@@ -41,7 +41,7 @@ const filterOptions: FilterOptions[] = [
   <SelectInput v-model="sortDirection" :options="sortOptions" />
   -->
   <div class="input-container">
-    <input type="text" v-model="city" placeholder="City" class="instructions"/>
+    <input type="text" v-model="city" placeholder="City" min="01-01-1960" max="01-01-2023" class="instructions"/>
     <input type="date" v-model="start_date" class="instructions"/>
     <input type="date" v-model="end_date" class="instructions"/>
     <button class="instructions" @click="fetchOpenMeteo(city, start_date, end_date)">Get Weather Statistics</button>
