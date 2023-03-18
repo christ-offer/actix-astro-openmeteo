@@ -5,7 +5,6 @@ use actix_web::{
     Result,
     Responder,
 };
-use serde::{Deserialize, Serialize};
 use reqwest::Client;
 //use std::cmp::Ordering;
 
@@ -17,14 +16,7 @@ use crate::models::openmeteo::Stats;
 use crate::models::openmeteo::StatMap;
 use crate::models::openmeteo::MinMaxMean;
 use crate::models::openmeteo::Daily;
-
-
-#[derive(Debug, Serialize, Deserialize)]
-struct OSMData {
-    lat: String,
-    lon: String,
-}
-
+use crate::models::osm::Direction;
 
 #[post("/api/openmeteo")]
 async fn openmeteo(open_meteo_request: web::Json<OpenMeteoRequest>) -> Result<impl Responder> {
@@ -46,14 +38,14 @@ async fn openmeteo(open_meteo_request: web::Json<OpenMeteoRequest>) -> Result<im
         .send()
         .await
         .unwrap()
-        .json::<Vec<OSMData>>()
+        .json::<Vec<Direction>>()
         .await;
 
     let osm_data = response.unwrap();
     let lat = osm_data[0].lat.to_string();
     let lon = osm_data[0].lon.to_string();
 
-    let rez = OSMData {
+    let rez = Direction {
         lat: lat.to_string(),
         lon: lon.to_string(),
     };
@@ -106,7 +98,7 @@ async fn openmeteo(open_meteo_request: web::Json<OpenMeteoRequest>) -> Result<im
     
             for (i, value) in data.iter().enumerate() {
                 if let Some(val) = value {
-                    if let Some(time) = times[i].as_ref() {
+                    if let Some(_time) = times[i].as_ref() {
                         count += 1;
                         sum += val;
     
