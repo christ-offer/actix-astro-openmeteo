@@ -51,8 +51,14 @@ impl From<reqwest::Error> for CustomError {
 impl Daily {
     pub fn calculate_stats(&self) -> Stats {
         Stats {
-            temperature_2m_max: Self::calculate_stat_map(&self.temperature_2m_max, &self.time),
-            temperature_2m_min: Self::calculate_stat_map(&self.temperature_2m_min, &self.time),
+            temperature_2m_max: Self::calculate_stat_map(
+                &self.temperature_2m_max, 
+                &self.time
+            ),
+            temperature_2m_min: Self::calculate_stat_map(
+                &self.temperature_2m_min, 
+                &self.time
+            ),
             temperature_2m_mean: Self::calculate_stat_map(
                 &self.temperature_2m_mean,
                 &self.time,
@@ -73,18 +79,30 @@ impl Daily {
                 &self.shortwave_radiation_sum,
                 &self.time,
             ),
-            precipitation_sum: Self::calculate_stat_map(&self.precipitation_sum, &self.time),
+            precipitation_sum: Self::calculate_stat_map(
+                &self.precipitation_sum, 
+                &self.time
+            ),
             precipitation_hours: Self::calculate_stat_map(
                 &self.precipitation_hours,
                 &self.time,
             ),
-            windspeed_10m_max: Self::calculate_stat_map(&self.windspeed_10m_max, &self.time),
-            windgusts_10m_max: Self::calculate_stat_map(&self.windgusts_10m_max, &self.time),
+            windspeed_10m_max: Self::calculate_stat_map(
+                &self.windspeed_10m_max, 
+                &self.time
+            ),
+            windgusts_10m_max: Self::calculate_stat_map(
+                &self.windgusts_10m_max, 
+                &self.time
+            ),
             et0_fao_evapotranspiration: Self::calculate_stat_map(
                 &self.et0_fao_evapotranspiration,
                 &self.time,
             ),
-            snowfall_sum: Self::calculate_stat_map(&self.snowfall_sum, &self.time),
+            snowfall_sum: Self::calculate_stat_map(
+                &self.snowfall_sum, 
+                &self.time
+            ),
         }
     }
 
@@ -95,46 +113,70 @@ impl Daily {
         let mut count = 0;
 
         for (i, value) in data.iter().enumerate() {
+            // Check if the current value is not None (using the `if let` syntax)
             if let Some(val) = value {
+                // Check if the corresponding time is not None (using the `if let` syntax)
                 if let Some(_time) = times[i].as_ref() {
                     count += 1;
                     sum += val;
-
+    
+                    // Update the minimum value and its index, if necessary (using a match expression)
                     match min {
+                        // If min is None, set min to the current index and value
                         None => min = Some((i, *val)),
+                        // If min is Some, and the current value is less than the stored minimum value, update min
                         Some((_, min_val)) if *val < min_val => min = Some((i, *val)),
+                        // In all other cases, do nothing
                         _ => (),
                     }
-
+    
+                    // Update the maximum value and its index, if necessary (using a match expression)
                     match max {
+                        // If max is None, set max to the current index and value
                         None => max = Some((i, *val)),
+                        // If max is Some, and the current value is greater than the stored maximum value, update max
                         Some((_, max_val)) if *val > max_val => max = Some((i, *val)),
+                        // In all other cases, do nothing
                         _ => (),
                     }
                 }
             }
         }
-
         let mean = if count > 0 { sum / count as f64 } else { 0.0 };
 
+        // Construct the StatMap struct with the calculated min, max, and mean values
         StatMap {
+            // For the min value in StatMap:
             min: MinMaxMean {
+                // Set the time field to the time at the index corresponding to the minimum value
+                // If min is None, use an empty string as the time
                 time: min
-                    .map(|(i, _)| times[i].clone().unwrap())
-                    .unwrap_or("".to_string()),
-                value: min.map(|(_, v)| v).unwrap_or(0.0),
+                    .map(|(i, _)| times[i].clone().unwrap()) // Get the time at the index 'i' if min is Some((i, _))
+                    .unwrap_or("".to_string()), // If min is None, use an empty string
+                // Set the value field to the minimum value
+                // If min is None, use 0.0 as the value
+                value: min.map(|(_, v)| v).unwrap_or(0.0), // Get the minimum value 'v' if min is Some((_, v)), otherwise use 0.0
             },
+            // For the max value in StatMap:
             max: MinMaxMean {
+                // Set the time field to the time at the index corresponding to the maximum value
+                // If max is None, use an empty string as the time
                 time: max
-                    .map(|(i, _)| times[i].clone().unwrap())
-                    .unwrap_or("".to_string()),
-                value: max.map(|(_, v)| v).unwrap_or(0.0),
+                    .map(|(i, _)| times[i].clone().unwrap()) // Get the time at the index 'i' if max is Some((i, _))
+                    .unwrap_or("".to_string()), // If max is None, use an empty string
+                // Set the value field to the maximum value
+                // If max is None, use 0.0 as the value
+                value: max.map(|(_, v)| v).unwrap_or(0.0), // Get the maximum value 'v' if max is Some((_, v)), otherwise use 0.0
             },
+            // For the mean value in StatMap:
             mean: MinMaxMean {
+                // Set the time field to an empty string, as it's not applicable for the mean value
                 time: "".to_string(),
+                // Set the value field to the mean value
                 value: mean,
             },
         }
+
     }
 }
 
