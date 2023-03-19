@@ -6,6 +6,18 @@ import OpenMeteoIsland from '../../components/OpenMeteoIsland.vue';
 
 <Layout title="Welcome to Astro.">
 	<main>
+    <h1 class="text-gradient">OpenMeteo</h1>
+    <div class="instructions landing-text">
+      <p>
+        This is a Vue island component inside a statically build Astro page.
+      </p>
+      <p>
+        This is a page to show the data from the OpenMeteo API - 
+      </p>
+      <p>
+        The data is fetched from the API running on an Actix webserver (Rust btw) on localhost:3000/api/openmeteo where the statistics are calculated and delivered to the client.
+      </p>
+  </div>
     <OpenMeteoIsland client:load />
 	</main>
 </Layout>
@@ -21,35 +33,11 @@ import OpenMeteoIsland from '../../components/OpenMeteoIsland.vue';
 		margin: 0;
 	}
 	.text-gradient {
-		background-image: var(--accent-gradient);
-		-webkit-background-clip: text;
-		-webkit-text-fill-color: transparent;
-		background-size: 400%;
-		background-position: 0%;
+		text-align: center;
 	}
-	.instructions {
-		line-height: 1.6;
-		margin: 1rem 0;
-		border: 1px solid rgba(var(--accent), 25%);
-		background-color: white;
-		padding: 1rem;
-		border-radius: 0.4rem;
-	}
-	.instructions code {
-		font-size: 0.875em;
-		font-weight: bold;
-		background: rgba(var(--accent), 12%);
-		color: rgb(var(--accent));
-		border-radius: 4px;
-		padding: 0.3em 0.45em;
-	}
-	.instructions strong {
-		color: rgb(var(--accent));
-	}
-	.link-card-grid {
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(24ch, 1fr));
-		gap: 1rem;
-		padding: 0;
-	}
+  .landing-text {
+  max-width: 75%;
+  margin-inline: auto;
+  }
+
 </style>

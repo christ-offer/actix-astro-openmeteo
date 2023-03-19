@@ -24,18 +24,7 @@ const filterOptions: FilterOptions[] = [
 ];
 </script>
 <template>
-  <h1 class="text-gradient">OpenMeteo</h1>
-  <div class="instructions landing-text">
-    <p>
-      This is a Vue island component inside a statically build Astro page.
-    </p>
-    <p>
-      This is a page to show the data from the OpenMeteo API - 
-    </p>
-    <p>
-      The data is fetched from the API running on an Actix webserver (Rust btw) on localhost:3000/api/openmeteo where the statistics are calculated and delivered to the client.
-    </p>
-</div>
+
   <!--
   <SelectInput v-model="filterOption" :options="filterOptions" />
   <SelectInput v-model="sortDirection" :options="sortOptions" />
@@ -186,10 +175,6 @@ const fetchOpenMeteo = async (city: string, start_date: string, end_date: string
   text-align: center
 }
 
-.landing-text {
-  max-width: 75%;
-  margin-inline: auto;
-}
 
 
 </style>
