@@ -2,11 +2,18 @@
 import Layout from '../layouts/Layout.astro';
 
 ---
-
-<Layout title="Welcome to Astro.">
+<Layout title="Welcome to Grim Town.">
 	<main>
 		<h1>
-			<span class="text-gradient">Welcome my playground.</span>
+			<span class="text-gradient">
+				<span class="text-gradient-item">Hello..</span>
+				<span class="text-gradient-item-2">Hello...</span>
+				<span class="text-gradient-item-3">Hello.....</span>
+				<br>
+				<span class="text-gradient-item-4">Is there </span> 
+				<span class="text-gradient-item-5">anybody</span>
+				<span class="text-gradient-item-6"> out there...?</span>
+			</span>
 		</h1>
 		<p class="instructions">
 			<strong>Get started by editing <code>src/pages/index.astro</code></strong>
@@ -25,5 +32,31 @@ import Layout from '../layouts/Layout.astro';
 		font-size: 3rem;
 		font-weight: 800;
 		margin: 0;
+		text-align: center;
 	}
+	.text-gradient {
+	}
+	.text-gradient-item {
+		font-size: 72px
+	}
+	.text-gradient-item-2 {
+		font-size: 52px;
+	}
+	.text-gradient-item-3 {
+		font-size: 32px;
+	}
+	
+	.text-gradient-item-4 {
+		font-size: 32px;
+	}
+	
+	.text-gradient-item-5 {
+		font-size: 52px;
+	}
+	
+	.text-gradient-item-6 {
+		font-size: 72px;
+	}
+	
+	
 </style>
