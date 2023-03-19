@@ -11,7 +11,9 @@ async fn main() -> std::io::Result<()> {
     env_logger::init();
 
     HttpServer::new(|| {
-        App::new().service(api::openmeteo::openmeteo).service(
+        App::new()
+        .service(api::openmeteo::openmeteo)
+        .service(
             fs::Files::new("/", "./www/dist")
                 .index_file("index.html")
                 .show_files_listing(),
@@ -21,4 +23,3 @@ async fn main() -> std::io::Result<()> {
     .run()
     .await
 }
-
